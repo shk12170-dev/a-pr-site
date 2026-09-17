@@ -191,6 +191,7 @@ def 숫자모으기(리추얼, 과제자료):
                     "값": f"{달별[첫달]['일부']} → {달별[끝달]['일부']}",
                     "보조": f"{첫달} → {끝달}",
                     "출처": "내 리추얼 기록 (마무리 칸 문장을 그대로 셈)",
+                    "짝": "이야기 속 고난 장면과 연결: 오류에 막혀 \"일부 했다\"만 쓸 수 있던 8월이, 9월 들어 \"했다\"로 자주 바뀌었습니다.",
                 }
             )
 
@@ -231,6 +232,7 @@ def 숫자모으기(리추얼, 과제자료):
                 "값": 항목["값"],
                 "보조": 항목.get("보조", ""),
                 "출처": 항목["출처"],
+                "짝": 항목.get("짝", ""),
             }
         )
     return 숫자
@@ -271,12 +273,15 @@ def 숫자_html(숫자) -> str:
     칸 = []
     for n in 숫자:
         보조 = f'<span class="b">{html.escape(n["보조"])}</span>' if n["보조"] else ""
+        짝 = n.get("짝", "")
+        짝문구 = f'<span class="link">{html.escape(짝)}</span>' if 짝 else ""
         칸.append(
             f'    <div class="num">'
             f'<span class="v">{html.escape(n["값"])}</span>'
             f'<span class="k">{html.escape(n["이름"])}</span>'
             f"{보조}"
             f'<span class="s">출처: {html.escape(n["출처"])}</span>'
+            f"{짝문구}"
             f"</div>"
         )
     return "\n".join(칸)
