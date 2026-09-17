@@ -14,6 +14,11 @@
     --card: #f7f9fb;
     --accent: {{강조색}};
     --accent-soft: {{강조색_연한}};
+    --backdrop:
+      radial-gradient(1100px 550px at 12% -8%, rgba(255,255,255,.65), transparent 60%),
+      radial-gradient(900px 520px at 100% 0%, rgba(190,238,255,.75), transparent 55%),
+      linear-gradient(165deg, #eaf7ff 0%, #d3edff 32%, #a9dcff 66%, #7cc6ff 100%);
+    --page-shadow: 0 24px 64px -24px rgba(15,90,140,.35), 0 4px 18px rgba(15,90,140,.12);
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -24,21 +29,40 @@
       --card: #1b1f24;
       --accent: {{강조색_다크}};
       --accent-soft: #232a33;
+      --backdrop:
+        radial-gradient(1100px 550px at 12% -8%, rgba(90,150,190,.25), transparent 60%),
+        radial-gradient(900px 520px at 100% 0%, rgba(60,110,150,.35), transparent 55%),
+        linear-gradient(165deg, #0b1520 0%, #0d1e30 35%, #0f2740 70%, #123252 100%);
+      --page-shadow: 0 24px 64px -24px rgba(0,0,0,.6), 0 4px 18px rgba(0,0,0,.35);
     }
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    background: var(--bg);
+    min-height: 100vh;
+    background: var(--backdrop);
+    background-attachment: fixed;
     color: var(--fg);
     font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
       "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
     line-height: 1.75;
     font-size: 17px;
   }
+  .page {
+    max-width: 760px;
+    margin: 32px auto;
+    background: var(--bg);
+    border-radius: 20px;
+    box-shadow: var(--page-shadow);
+    overflow: hidden;
+  }
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
   a { color: var(--accent); }
+
+  @media (max-width: 800px) {
+    .page { margin: 16px; border-radius: 14px; }
+  }
 
   .topbar {
     border-bottom: 1px solid var(--line);
@@ -91,7 +115,7 @@
   .quote .src { font-size: 12px; color: var(--muted); display: block; }
 
   .numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-  .num { background: var(--card); border-radius: 12px; padding: 16px; }
+  .num { background: var(--card); border-radius: 12px; padding: 16px; min-width: 0; overflow-wrap: break-word; }
   .num .v { font-size: 26px; font-weight: 700; letter-spacing: -.01em; display: block; }
   .num .k { font-size: 14px; display: block; margin-top: 2px; }
   .num .b { font-size: 13px; color: var(--muted); display: block; }
@@ -127,6 +151,7 @@
 </style>
 </head>
 <body>
+<div class="page">
 
 <div class="topbar"><div class="wrap">
   <span>{{이름}} · {{목표}} 지원용</span>
@@ -188,5 +213,6 @@
   <p class="meta">{{하단_안내}}</p>
 </div></footer>
 
+</div>
 </body>
 </html>
