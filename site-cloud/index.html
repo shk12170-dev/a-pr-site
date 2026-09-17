@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김상혁 — 클라우드 엔지니어</title>
+<meta name="description" content="2026년 9월 15일, 손으로 100번 넘게 받아야 할 자료를 스크립트 한 개로 바꾼 사람">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #16191d;
+    --muted: #5b6472;
+    --line: #e2e6eb;
+    --card: #f7f9fb;
+    --accent: #4a4ec4;
+    --accent-soft: #ecedfa;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171a;
+      --fg: #eceef1;
+      --muted: #9aa4b2;
+      --line: #2a2f36;
+      --card: #1b1f24;
+      --accent: #9ea2f5;
+      --accent-soft: #232a33;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    line-height: 1.75;
+    font-size: 17px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+  a { color: var(--accent); }
+
+  .topbar {
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+    padding: 10px 0;
+    color: var(--muted);
+  }
+  .topbar .wrap { display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+
+  header.hero { padding: 56px 0 40px; border-bottom: 1px solid var(--line); }
+  .role {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: .04em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin-bottom: 18px;
+  }
+  h1 { font-size: 40px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -.02em; }
+  .oneline { font-size: 21px; line-height: 1.55; margin: 0 0 10px; font-weight: 600; }
+  .oneline-src { font-size: 13px; color: var(--muted); margin: 0 0 22px; }
+  .lede { color: var(--muted); margin: 0 0 26px; }
+  nav.jump { display: flex; flex-wrap: wrap; gap: 8px; }
+  nav.jump a {
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 7px 12px;
+    color: var(--fg);
+  }
+  nav.jump a:hover { border-color: var(--accent); color: var(--accent); }
+
+  section { padding: 46px 0; border-bottom: 1px solid var(--line); }
+  h2 { font-size: 15px; letter-spacing: .08em; color: var(--muted); font-weight: 600; margin: 0 0 22px; text-transform: uppercase; }
+  h3 { font-size: 19px; margin: 0 0 8px; }
+  p { margin: 0 0 18px; }
+
+  .story p:first-of-type { font-size: 19px; font-weight: 600; }
+
+  .ability { border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+  .ability h3 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .ability .note { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+  .quote { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; margin: 0 0 12px; }
+  .quote:last-child { margin-bottom: 0; }
+  .quote .when { font-size: 13px; color: var(--accent); font-weight: 600; display: block; }
+  .quote .text { display: block; }
+  .quote .src { font-size: 12px; color: var(--muted); display: block; }
+
+  .numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .num { background: var(--card); border-radius: 12px; padding: 16px; }
+  .num .v { font-size: 26px; font-weight: 700; letter-spacing: -.01em; display: block; }
+  .num .k { font-size: 14px; display: block; margin-top: 2px; }
+  .num .b { font-size: 13px; color: var(--muted); display: block; }
+  .num .s { font-size: 12px; color: var(--muted); display: block; margin-top: 8px; }
+  .numbers-note { color: var(--muted); font-size: 14px; margin: 18px 0 0; }
+
+  .work { border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+  .work .no { font-size: 13px; color: var(--accent); font-weight: 600; }
+  .work p { margin: 8px 0 14px; color: var(--muted); }
+  .work a.btn {
+    display: inline-block; font-size: 14px; text-decoration: none;
+    border: 1px solid var(--accent); color: var(--accent);
+    border-radius: 8px; padding: 7px 14px;
+  }
+  .work.pending { border-style: dashed; }
+  .work.pending .badge { font-size: 13px; color: var(--muted); }
+
+  table.tasks { width: 100%; border-collapse: collapse; font-size: 15px; }
+  table.tasks th, table.tasks td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.tasks th { font-size: 13px; color: var(--muted); font-weight: 600; }
+  table.tasks td.n { color: var(--muted); white-space: nowrap; }
+
+  footer { padding: 40px 0 64px; }
+  footer .contact { font-size: 18px; margin: 0 0 10px; }
+  footer .meta { color: var(--muted); font-size: 13px; margin: 0; }
+
+  @media (max-width: 560px) {
+    h1 { font-size: 31px; }
+    .oneline { font-size: 18px; }
+    body { font-size: 16px; }
+    header.hero { padding: 36px 0 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <span>김상혁 · 클라우드 엔지니어 지원용</span>
+  <span style="color:var(--muted)">백엔드 개발자 버전 준비 중</span>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <span class="role">클라우드 엔지니어</span>
+  <h1>김상혁</h1>
+  <p class="oneline">2026년 9월 15일, 손으로 100번 넘게 받아야 할 자료를 스크립트 한 개로 바꾼 사람</p>
+  <p class="oneline-src">— 10번 과제 방향설정 문서 3단계 &#x27;도중에 설계를 바꾼 것&#x27;</p>
+  <p class="lede">군에서의 고난을 지나 교육과정 26일의 기록으로 다시 일어난 과정을, 날짜와 숫자로 확인할 수 있게 적었습니다.</p>
+  <nav class="jump">
+    <a href="#story">이야기</a>
+    <a href="#ability">세 가지 능력</a>
+    <a href="#numbers">숫자</a>
+    <a href="#works">대표작</a>
+    <a href="#tasks">과제 기록</a>
+  </nav>
+</div></header>
+
+<section id="story"><div class="wrap">
+  <h2>이야기</h2>
+  <div class="story">
+    <p>2022년 4월, 나는 2주에 하루만 부대 밖으로 나갈 수 있는 곳에 배치됐다.</p>
+    <p>2017년 10월에 병사로 입대해 2019년 7월에 전역하고, 곧바로 부사관으로 다시 군에 남았다. GOP 부대에서의 생활은 2주에 하루 외박을 빼면 출퇴근이라는 구분 자체가 없었다. 몸이 힘든 것보다 견디기 어려웠던 건, 답답할 때 내가 고를 수 있는 선택지가 거의 없다는 사실이었다. 압박감은 시간이 갈수록 커졌고, 결국 심신 회복이 필요하다는 판단에 따라 원소속 부대로 복귀했다. 스스로 버텨내지 못했다는 부끄러움과 그곳에서 벗어났다는 안도감이 같이 밀려온 날이었다.</p>
+    <p>파견 근무를 거치며 생활 리듬을 되찾고 남은 복무를 마친 뒤 전역했다. 다음 단계를 고민하다, AI를 다룰 수 있게 되면 쓸 데가 있겠다는 생각으로 SKT ALEPH 교육과정에 신청서를 냈다.</p>
+    <p>2026년 8월, 교육과정이 시작되자 벽은 다른 모양으로 다시 나타났다. 실습 중 오류 하나가 그날 진도를 통째로 막았다. 철책과 화면의 붉은 오류 메시지는 전혀 달랐지만, 앞으로 나가고 싶은데 나갈 수 없다는 느낌은 같았다.</p>
+    <p>달라진 건 이번에는 방법을 내가 만들 수 있었다는 점이다. 8월 25일 마무리 기록에 &quot;오후 쉬는시간에 &#x27;나는 할 수 있다&#x27;고 속으로 외쳤다&quot;고 적었고, 다음 날 아침에는 그 방법을 한 번 더 쓰겠다고 적었다. 처음에는 혼잣말이었지만, 9월 9일에는 &quot;막히는 부분에 대해 심호흡하면서 &#x27;나는 할 수 있다&#x27;라고 속으로 얘기하고 실습을 이어나가 무사히 마쳤다&quot;가 되었다.</p>
+    <p>혼자 버티지도 않았다. 막히면 누구에게 무엇을 도움받았는지 기록에 구체적으로 남겼다. 8월 27일 아침에는 &quot;말 한마디에 의미가 있다고 생각하고 타인의 마음을 생각해보고 얘기하자&quot;고 적었다. 9월 16일 아침, 동료는 내 장점을 &quot;먼저 인사해주시고 편하게 이야기 나눠주셔서 아침 분위기가 한층 더 좋아졌습니다&quot;라고 적어주었다. 내가 쓴 말이 아니라 옆에서 본 사람이 쓴 말이다.</p>
+    <p>9월 10일 기록은 &quot;막힌 부분에 대해 당황하지 않고 놓친 부분을 파악하여 차분한 진행으로 실습에 따랐다&quot;였다. 9월 16일에는 &quot;포기하지 않는 끈기를 바탕으로 바이브코딩 능력이 향상되고 있다&quot;고 적었다. 당황이 사라진 것은 아니다. 당황한 채로도 다음 걸음을 뗄 수 있게 된 것이다.</p>
+    <p>8월 기록과 9월 기록을 나란히 놓으면 차이가 눈에 보인다. 8월에는 &quot;일부 했다&quot;로 끝나는 마무리가 많았고, 9월에는 &quot;했다&quot;로 끝나는 마무리가 많아졌다. 이 사이트의 숫자 칸은 그 기록을 그대로 센 것이다.</p>
+    <p>그 사이 과제 결과물이 하나씩 쌓였다. 정적 페이지에서 시작해 데이터 구조를 설계하고, 로그인과 권한을 붙이고, 비밀번호 없이 패스키로만 열리는 영역을 만들고, 공개 데이터로 가설을 검증한 논문 한 편과 3만 자 원고를 마쳤다. 지금도 저녁마다 그날 한 일을 한 줄 적는다.</p>
+    <p>갇혀 있다는 감각이 완전히 사라지지는 않았다. 다만 그 앞에서 무엇을 해볼지는 이제 내가 정한다.</p>
+    <p>지금은 정보처리기사와 SQL 자격증을 준비하며, 클라우드 네이티브 환경을 다루는 엔지니어를 목표로 하고 있습니다.</p>
+  </div>
+</div></section>
+
+<section id="ability"><div class="wrap">
+  <h2>세 가지 능력이 드러난 기록</h2>
+    <article class="ability">
+      <h3>자기조절력</h3>
+      <p class="note">결과가 예상과 다를 때 결론을 끼워 맞추지 않았습니다. 논문에서도 가설을 그대로 기각하고 왜 반대로 나왔는지를 적었습니다.</p>
+      <blockquote class="quote"><span class="when">2026-08-25 · 마무리</span><span class="text">“오후 쉬는시간에 &#x27;나는 할 수 있다&#x27;고 속으로 외쳤다”</span><span class="src">리추얼 기록 2026-08-25 마무리</span></blockquote>
+      <blockquote class="quote"><span class="when">2026-09-09 · 마무리</span><span class="text">“막히는 부분에 대해 심호흡하면서 &#x27;나는 할 수 있다&#x27;라고 속으로 얘기하고 실습을 이어나가 무사히 마쳤다”</span><span class="src">리추얼 기록 2026-09-09 마무리</span></blockquote>
+    </article>
+    <article class="ability">
+      <h3>대인관계력</h3>
+      <p class="note">막힌 지점을 정리해서 묻고, 받은 도움을 기록으로 남겼습니다. 여러 사람이 같은 환경을 건드리는 자리에서 필요한 인계 습관입니다.</p>
+      <blockquote class="quote"><span class="when">2026-08-27 · 아침</span><span class="text">“말 한마디에 의미가 있다고 생각하고 타인의 마음을 생각해보고 얘기하자”</span><span class="src">리추얼 기록 2026-08-27 아침</span></blockquote>
+      <blockquote class="quote"><span class="when">2026-09-16 · 아침 · 동료가 말해준 내 장점</span><span class="text">“오늘도 밝은 표정으로 먼저 인사해주시고 편하게 이야기 나눠주셔서 아침 분위기가 한층 더 좋아졌습니다”</span><span class="src">리추얼 기록 2026-09-16 아침 (동료가 적어준 문장)</span></blockquote>
+    </article>
+    <article class="ability">
+      <h3>자기동기력</h3>
+      <p class="note">같은 작업을 100번 반복하는 대신, 재현 가능한 스크립트로 바꾸는 쪽을 택했습니다. 한 번 만든 절차를 남이 다시 돌릴 수 있게 문서로 남겼습니다.</p>
+      <blockquote class="quote"><span class="when">2026-09-10 · 마무리</span><span class="text">“막힌 부분에 대해 당황하지 않고 놓친 부분을 파악하여 차분한 진행으로 실습에 따랐다”</span><span class="src">리추얼 기록 2026-09-10 마무리</span></blockquote>
+      <blockquote class="quote"><span class="when">2026-09-16 · 아침 · 그 결과와 알게 된 점</span><span class="text">“포기하지 않는 끈기를 바탕으로 바이브코딩 능력이 향상되고 있다”</span><span class="src">리추얼 기록 2026-09-16 아침</span></blockquote>
+    </article>
+</div></section>
+
+<section id="numbers"><div class="wrap">
+  <h2>숫자</h2>
+  <div class="numbers">
+    <div class="num"><span class="v">11개</span><span class="k">완료한 과제</span><span class="b">13번 진행 예정</span><span class="s">출처: 내 제출 현황 · GitHub 저장소</span></div>
+    <div class="num"><span class="v">7개</span><span class="k">로그인 없이 열리는 결과물</span><span class="s">출처: 각 과제 배포 주소</span></div>
+    <div class="num"><span class="v">30,056자</span><span class="k">장편 원고 분량</span><span class="s">출처: 11번 과제 제출물 문서 (공백 제외, 유니코드 NFC 기준)</span></div>
+    <div class="num"><span class="v">120행</span><span class="k">논문 원자료</span><span class="b">10개 프로젝트 × 12개월</span><span class="s">출처: 10번 과제 raw_data.csv</span></div>
+    <div class="num"><span class="v">119개</span><span class="k">논문 분석 표본</span><span class="b">결측 1행 제외</span><span class="s">출처: 10번 과제 분석 요약표</span></div>
+  </div>
+  <p class="numbers-note">이 칸의 숫자는 기록 파일에서 그대로 센 것입니다. 새 기록을 넣고 장치를 한 번 돌리면 다시 계산됩니다.</p>
+</div></section>
+
+<section id="works"><div class="wrap">
+  <h2>대표작</h2>
+    <article class="work">
+      <span class="no">10번 과제</span>
+      <h3>논문 — CNCF 프로젝트의 기여자 수와 이슈 처리 시간</h3>
+      <p>CNCF Graduated 프로젝트 10개를 12개월간 관측했습니다. 대시보드에서 CSV를 100회 넘게 손으로 받아야 한다는 것을 확인한 뒤, 같은 지표를 GitHub REST API로 자동 수집하는 방식으로 설계를 직접 바꿨습니다. 수집·분석 스크립트와 원자료를 함께 공개해 다시 돌릴 수 있게 했습니다.</p>
+      <a class="btn" href="자료/논문.docx">논문 파일 내려받기 (로그인 없음)</a>
+    </article>
+    <article class="work pending">
+      <span class="no">13번 과제</span>
+      <h3>앱 (예정)</h3>
+      <p>위 연구 결과를 실제로 쓸 수 있는 형태로 옮기는 과제입니다. 완료 후 이 자리에 결과물과 소스 링크를 넣습니다.</p>
+      <span class="badge">아직 진행 전입니다. 13번 과제를 마치면 이 자리에 결과물과 소스 링크가 들어갑니다.</span>
+    </article>
+    <article class="work">
+      <span class="no">8번 과제</span>
+      <h3>패스키 포트폴리오 — 서버리스 API 배포</h3>
+      <p>인증 API를 서버리스 환경에 배포하고, 배포된 서버에 직접 요청을 보내 응답을 증거 문서로 자동 생성하는 스크립트를 만들었습니다. 긴 무작위 값은 자동으로 가려 기록했습니다.</p>
+      <a class="btn" href="https://passkey-portfolio.vercel.app">로그인 없이 공개 첫 화면 열기</a>
+    </article>
+</div></section>
+
+<section id="tasks"><div class="wrap">
+  <h2>과제 기록</h2>
+  <table class="tasks">
+    <thead><tr><th>과제</th><th>한 일</th><th>능력</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1번</td><td><strong><a href="https://shk12170-dev.github.io/portfolio/">공개 소개 페이지</a></strong><br>로그인 없이 열리는 공개 페이지를 확보했고, 이후 8번 과제의 공개 첫 화면으로 재사용했다.</td><td class="n">자기동기력</td></tr>
+      <tr><td class="n">4번</td><td><strong><a href="https://shk12170-dev.github.io/exchange-rate/">환율 조회 페이지</a></strong><br>로그인 없이 열리는 공개 페이지와 점검 문서를 함께 남겼다.</td><td class="n">자기동기력</td></tr>
+      <tr><td class="n">5번</td><td><strong>프로젝트 인계 (HANDOVER)</strong><br>다른 사람이 읽고 이어받을 수 있는 형태로 넘겼고, 이후 과제의 README 작성 방식의 기준이 되었다.</td><td class="n">대인관계력</td></tr>
+      <tr><td class="n">8번</td><td><strong><a href="https://passkey-portfolio.vercel.app">패스키 포트폴리오 (비밀번호 없는 인증)</a></strong><br>비밀번호와 개인키를 저장하지 않는 인증을 배포하고, 6개 확인 항목을 실제 응답으로 증명한 문서를 함께 남겼다.</td><td class="n">자기조절력</td></tr>
+      <tr><td class="n">9번</td><td><strong><a href="https://agent-ritual.vercel.app">리추얼 기록에서 강점 찾기</a></strong><br>날짜와 원문이 붙은 강점 지도와 1인칭 서사를 만들었고, 두 사람 모두 과장이 없다고 답했다.</td><td class="n">대인관계력</td></tr>
+      <tr><td class="n">10번</td><td><strong>논문 — CNCF 프로젝트의 기여자 수와 이슈 처리 시간</strong><br>가설을 끼워 맞추지 않고 그대로 기각하고, 왜 반대로 나왔는지를 선행 연구 4편을 근거로 적었다. 원자료와 수집·분석 스크립트를 함께 공개해 다시 돌릴 수 있게 했다.</td><td class="n">자기동기력</td></tr>
+      <tr><td class="n">11번</td><td><strong>장편 원고 『갇힌 방에서 나가는 법』</strong><br>공백 제외 30,056자 원고와 대조표, 수정 기록을 남겼다. 지어낸 장면을 넣지 않는다는 기준을 문서로 명시했다.</td><td class="n">자기조절력</td></tr>
+      <tr><td class="n">13번</td><td>앱 (예정)</td><td class="n">—</td></tr>
+    </tbody>
+  </table>
+</div></section>
+
+<footer><div class="wrap">
+  <p class="contact">연락: <span style="color:var(--muted)">공개할 주소 미정</span></p>
+  <p class="meta">이 페이지는 장치(build.py)가 리추얼 기록·과제 목록·출석 파일에서 다시 만든 것입니다. 본인 이름과 위 연락 수단 외의 개인정보는 넣지 않았고, 동료는 모두 "동료"로만 적었습니다.</p>
+</div></footer>
+
+</body>
+</html>

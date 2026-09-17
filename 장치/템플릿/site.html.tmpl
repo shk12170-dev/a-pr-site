@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{이름}} — {{목표}}</title>
+<meta name="description" content="{{한줄소개}}">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #16191d;
+    --muted: #5b6472;
+    --line: #e2e6eb;
+    --card: #f7f9fb;
+    --accent: {{강조색}};
+    --accent-soft: {{강조색_연한}};
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171a;
+      --fg: #eceef1;
+      --muted: #9aa4b2;
+      --line: #2a2f36;
+      --card: #1b1f24;
+      --accent: {{강조색_다크}};
+      --accent-soft: #232a33;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    line-height: 1.75;
+    font-size: 17px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+  a { color: var(--accent); }
+
+  .topbar {
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+    padding: 10px 0;
+    color: var(--muted);
+  }
+  .topbar .wrap { display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+
+  header.hero { padding: 56px 0 40px; border-bottom: 1px solid var(--line); }
+  .role {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: .04em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin-bottom: 18px;
+  }
+  h1 { font-size: 40px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -.02em; }
+  .oneline { font-size: 21px; line-height: 1.55; margin: 0 0 10px; font-weight: 600; }
+  .oneline-src { font-size: 13px; color: var(--muted); margin: 0 0 22px; }
+  .lede { color: var(--muted); margin: 0 0 26px; }
+  nav.jump { display: flex; flex-wrap: wrap; gap: 8px; }
+  nav.jump a {
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 7px 12px;
+    color: var(--fg);
+  }
+  nav.jump a:hover { border-color: var(--accent); color: var(--accent); }
+
+  section { padding: 46px 0; border-bottom: 1px solid var(--line); }
+  h2 { font-size: 15px; letter-spacing: .08em; color: var(--muted); font-weight: 600; margin: 0 0 22px; text-transform: uppercase; }
+  h3 { font-size: 19px; margin: 0 0 8px; }
+  p { margin: 0 0 18px; }
+
+  .story p:first-of-type { font-size: 19px; font-weight: 600; }
+
+  .ability { border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+  .ability h3 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .ability .note { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+  .quote { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; margin: 0 0 12px; }
+  .quote:last-child { margin-bottom: 0; }
+  .quote .when { font-size: 13px; color: var(--accent); font-weight: 600; display: block; }
+  .quote .text { display: block; }
+  .quote .src { font-size: 12px; color: var(--muted); display: block; }
+
+  .numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .num { background: var(--card); border-radius: 12px; padding: 16px; }
+  .num .v { font-size: 26px; font-weight: 700; letter-spacing: -.01em; display: block; }
+  .num .k { font-size: 14px; display: block; margin-top: 2px; }
+  .num .b { font-size: 13px; color: var(--muted); display: block; }
+  .num .s { font-size: 12px; color: var(--muted); display: block; margin-top: 8px; }
+  .numbers-note { color: var(--muted); font-size: 14px; margin: 18px 0 0; }
+
+  .work { border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+  .work .no { font-size: 13px; color: var(--accent); font-weight: 600; }
+  .work p { margin: 8px 0 14px; color: var(--muted); }
+  .work a.btn {
+    display: inline-block; font-size: 14px; text-decoration: none;
+    border: 1px solid var(--accent); color: var(--accent);
+    border-radius: 8px; padding: 7px 14px;
+  }
+  .work.pending { border-style: dashed; }
+  .work.pending .badge { font-size: 13px; color: var(--muted); }
+
+  table.tasks { width: 100%; border-collapse: collapse; font-size: 15px; }
+  table.tasks th, table.tasks td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.tasks th { font-size: 13px; color: var(--muted); font-weight: 600; }
+  table.tasks td.n { color: var(--muted); white-space: nowrap; }
+
+  footer { padding: 40px 0 64px; }
+  footer .contact { font-size: 18px; margin: 0 0 10px; }
+  footer .meta { color: var(--muted); font-size: 13px; margin: 0; }
+
+  @media (max-width: 560px) {
+    h1 { font-size: 31px; }
+    .oneline { font-size: 18px; }
+    body { font-size: 16px; }
+    header.hero { padding: 36px 0 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <span>{{이름}} · {{목표}} 지원용</span>
+  {{상대트랙_링크}}
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <span class="role">{{목표}}</span>
+  <h1>{{이름}}</h1>
+  <p class="oneline">{{한줄소개}}</p>
+  <p class="oneline-src">— {{한줄소개_출처}}</p>
+  <p class="lede">{{첫화면_보조문}}</p>
+  <nav class="jump">
+    <a href="#story">이야기</a>
+    <a href="#ability">세 가지 능력</a>
+    <a href="#numbers">숫자</a>
+    <a href="#works">대표작</a>
+    <a href="#tasks">과제 기록</a>
+  </nav>
+</div></header>
+
+<section id="story"><div class="wrap">
+  <h2>이야기</h2>
+  <div class="story">
+{{이야기_본문}}
+  </div>
+</div></section>
+
+<section id="ability"><div class="wrap">
+  <h2>세 가지 능력이 드러난 기록</h2>
+{{능력_카드}}
+</div></section>
+
+<section id="numbers"><div class="wrap">
+  <h2>숫자</h2>
+  <div class="numbers">
+{{숫자_칸}}
+  </div>
+  <p class="numbers-note">{{숫자_안내}}</p>
+</div></section>
+
+<section id="works"><div class="wrap">
+  <h2>대표작</h2>
+{{대표작}}
+</div></section>
+
+<section id="tasks"><div class="wrap">
+  <h2>과제 기록</h2>
+  <table class="tasks">
+    <thead><tr><th>과제</th><th>한 일</th><th>능력</th></tr></thead>
+    <tbody>
+{{과제_목록}}
+    </tbody>
+  </table>
+</div></section>
+
+<footer><div class="wrap">
+  <p class="contact">{{연락처}}</p>
+  <p class="meta">{{하단_안내}}</p>
+</div></footer>
+
+</body>
+</html>
