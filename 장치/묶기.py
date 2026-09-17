@@ -13,7 +13,9 @@ from pathlib import Path
 장치 = Path(__file__).resolve().parent
 사업장 = 장치.parent
 담을폴더 = ["문서", "장치", "본문"]
-제외 = {"__pycache__", ".git"}
+제외폴더 = {"__pycache__", ".git"}
+# 개인 상세 텍스트가 담긴 원본. 계산에 필요한 정보만 남긴 "정제.json"만 ZIP에 담는다.
+제외파일 = {장치 / "입력" / "리추얼기록.json"}
 결과 = 사업장 / "제출물" / "제출_문서와장치.zip"
 
 
@@ -23,9 +25,9 @@ def 담기():
     for 이름 in 담을폴더:
         뿌리 = 사업장 / 이름
         for 경로 in sorted(뿌리.rglob("*")):
-            if 경로.is_dir() or any(부분 in 제외 for 부분 in 경로.parts):
+            if 경로.is_dir() or any(부분 in 제외폴더 for 부분 in 경로.parts):
                 continue
-            if 경로.suffix == ".pyc":
+            if 경로.suffix == ".pyc" or 경로 in 제외파일:
                 continue
             파일들.append(경로)
 

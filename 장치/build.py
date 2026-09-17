@@ -49,8 +49,8 @@ from pathlib import Path
 }
 
 날짜칸 = ("날짜", "date", "일자", "day")
-아침칸 = ("아침", "morning", "am", "오전")
-마무리칸 = ("마무리", "저녁", "evening", "pm", "회고")
+아침칸 = ("아침", "morning", "am", "오전", "open")
+마무리칸 = ("마무리", "저녁", "evening", "pm", "회고", "close")
 
 
 def 읽기(경로: Path):
@@ -76,16 +76,22 @@ def 글자로(값) -> str:
     return str(값).strip()
 
 
-def 리추얼세기():
-    """리추얼 기록 파일에서 숫자를 센다. 파일이 없으면 None을 돌려준다."""
-    경로 = 입력 / "리추얼기록.json"
-    if not 경로.exists():
-        return None
+원본경로 = 입력 / "리추얼기록.json"
+정제경로 = 입력 / "리추얼기록.정제.json"
 
-    자료 = 읽기(경로)
-    행들 = 자료.get("기록") if isinstance(자료, dict) else 자료
+
+def 원본에서_표뽑기(자료):
+    if isinstance(자료, list):
+        행들 = 자료
+    elif isinstance(자료, dict):
+        행들 = next(
+            (자료[키] for 키 in ("기록", "days", "records", "list", "entries") if isinstance(자료.get(키), list)),
+            None,
+        )
+    else:
+        행들 = None
     if not isinstance(행들, list):
-        raise SystemExit(f"[중단] {경로.name}에서 기록 목록을 찾지 못했습니다.")
+        raise SystemExit(f"[중단] {원본경로.name}에서 기록 목록을 찾지 못했습니다.")
 
     표 = []
     for 행 in 행들:
@@ -94,26 +100,66 @@ def 리추얼세기():
         날짜 = 글자로(칸찾기(행, 날짜칸))
         if not 날짜:
             continue
+        마무리글 = 글자로(칸찾기(행, 마무리칸))
         표.append(
             {
                 "날짜": 날짜[:10],
-                "아침": 글자로(칸찾기(행, 아침칸)),
-                "마무리": 글자로(칸찾기(행, 마무리칸)),
+                "아침있음": bool(글자로(칸찾기(행, 아침칸))),
+                "마무리있음": bool(마무리글),
+                "마무리_일부": ("일부" in 마무리글) if 마무리글 else None,
             }
         )
     표.sort(key=lambda r: r["날짜"])
+    return 표
 
-    마무리있음 = [r for r in 표 if r["마무리"]]
-    일부표현 = [r for r in 마무리있음 if "일부" in r["마무리"]]
+
+def 정제하기():
+    """원본(개인 상세 텍스트)이 있으면 계산에 필요한 최소 정보만 뽑아 정제본으로 저장한다.
+
+    원본은 개인정보가 담겨 있어 저장소에 올리지 않는다(.gitignore). 정제본만 커밋되므로
+    새 폴더에서 원본 없이 정제본만으로도 같은 숫자가 재현된다.
+    """
+    if 원본경로.exists():
+        표 = 원본에서_표뽑기(읽기(원본경로))
+        정제경로.write_text(
+            json.dumps(
+                {
+                    "설명": (
+                        "원본 리추얼기록.json(개인 상세 텍스트)에서 계산에 필요한 최소 정보만 "
+                        "자동으로 뽑아낸 정제본입니다. 원본은 저장소에 올리지 않고, 이 정제본만 "
+                        "커밋해도 숫자가 그대로 재현됩니다."
+                    ),
+                    "기록": 표,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        return 표
+    if 정제경로.exists():
+        return 읽기(정제경로)["기록"]
+    return None
+
+
+def 리추얼세기():
+    """리추얼 기록에서 숫자를 센다. 원본·정제본 모두 없으면 None을 돌려준다."""
+    표 = 정제하기()
+    if 표 is None:
+        return None
+
+    마무리있음 = [r for r in 표 if r["마무리있음"]]
+    일부표현 = [r for r in 마무리있음 if r["마무리_일부"]]
     달별 = {}
     for r in 마무리있음:
         달 = r["날짜"][:7]
         칸 = 달별.setdefault(달, {"일부": 0, "완료": 0})
-        칸["일부" if "일부" in r["마무리"] else "완료"] += 1
+        칸["일부" if r["마무리_일부"] else "완료"] += 1
 
     return {
         "기록일수": len(표),
-        "아침수": len([r for r in 표 if r["아침"]]),
+        "아침수": len([r for r in 표 if r["아침있음"]]),
         "마무리수": len(마무리있음),
         "첫날": 표[0]["날짜"] if 표 else "",
         "마지막날": 표[-1]["날짜"] if 표 else "",

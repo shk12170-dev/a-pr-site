@@ -275,15 +275,16 @@ def c21():
     장치있음 = "장치/build.py" in 이름들
     리드미 = "장치/README.md" in 이름들
     결과있음 = any(n.startswith("장치/마지막결과/") for n in 이름들)
-    좋음 = (not 암호) and 문서수 == 3 and 장치있음 and 리드미 and 결과있음
-    적기(
-        "BRA-C21",
-        "문서와 장치 ZIP이 파일로 있고 비밀번호 없이 열린다",
-        "통과" if 좋음 else "실패",
+    원본유출 = "장치/입력/리추얼기록.json" in 이름들
+    좋음 = (not 암호) and 문서수 == 3 and 장치있음 and 리드미 and 결과있음 and not 원본유출
+    상태메모 = (
         f"파일 {len(이름들)}개 · 문서 {문서수}개 · build.py {'O' if 장치있음 else 'X'} · "
         f"README {'O' if 리드미 else 'X'} · 마지막결과 {'O' if 결과있음 else 'X'} · "
-        f"비밀번호 {'있음' if 암호 else '없음'}",
+        f"비밀번호 {'있음' if 암호 else '없음'}"
     )
+    if 원본유출:
+        상태메모 += " · [경고] 리추얼 원본(개인 상세 텍스트)이 ZIP에 포함됨"
+    적기("BRA-C21", "문서와 장치 ZIP이 파일로 있고 비밀번호 없이 열린다", "통과" if 좋음 else "실패", 상태메모)
 
 
 def 실행():
