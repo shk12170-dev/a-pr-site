@@ -96,7 +96,7 @@ def c03():
 
 
 def c04():
-    이야기 = re.search(r'<section id="story">(.*?)</section>', 사이트글(), re.S)
+    이야기 = re.search(r'<section[^>]*\bid="story"[^>]*>(.*?)</section>', 사이트글(), re.S)
     본 = 본문만(이야기.group(1)) if 이야기 else ""
     날짜 = re.findall(r"\d{4}년 \d{1,2}월(?: \d{1,2}일)?", 본)
     적기(
