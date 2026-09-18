@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""제출용 ZIP 한 개를 만든다 (문서 6개 + 장치 + 본문).
+"""제출용 ZIP 한 개를 만든다 (문서 + 장치 + 본문 + 짧은 확인 방법·제출문·재현성 기록).
 
 사용법:  python 묶기.py
 결과:    제출물/제출_문서와장치.zip  — 비밀번호 없음
@@ -29,6 +29,11 @@ def 담기():
                 continue
             if 경로.suffix == ".pyc" or 경로 in 제외파일:
                 continue
+            파일들.append(경로)
+
+    for 이름 in ("짧은_확인_방법.md", "제출문.md", "재현성_확인.md"):
+        경로 = 사업장 / "제출물" / 이름
+        if 경로.exists():
             파일들.append(경로)
 
     with zipfile.ZipFile(결과, "w", zipfile.ZIP_DEFLATED) as z:

@@ -5,232 +5,67 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{이름}} — {{목표}}</title>
 <meta name="description" content="{{한줄소개}}">
-<style>
-  :root {
-    --bg: #ffffff;
-    --fg: #16191d;
-    --muted: #5b6472;
-    --line: #e2e6eb;
-    --card: #f7f9fb;
-    --accent: {{강조색}};
-    --accent-soft: {{강조색_연한}};
-    --backdrop:
-      radial-gradient(1100px 550px at 12% -8%, rgba(255,255,255,.65), transparent 60%),
-      radial-gradient(900px 520px at 100% 0%, rgba(190,238,255,.75), transparent 55%),
-      linear-gradient(165deg, #eaf7ff 0%, #d3edff 32%, #a9dcff 66%, #7cc6ff 100%);
-    --shadow-block: 0 1px 2px rgba(15,90,140,.08), 0 10px 24px -10px rgba(15,90,140,.28), 0 28px 56px -28px rgba(15,90,140,.24);
-    --shadow-tile: 0 1px 2px rgba(15,90,140,.06), 0 6px 14px -6px rgba(15,90,140,.18);
-    --shadow-tile-hover: 0 2px 4px rgba(15,90,140,.08), 0 12px 22px -8px rgba(15,90,140,.24);
-    --edge-top: rgba(255,255,255,.6);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #171b20;
-      --fg: #eceef1;
-      --muted: #9aa4b2;
-      --line: #2a2f36;
-      --card: #1f242b;
-      --accent: {{강조색_다크}};
-      --accent-soft: #232a33;
-      --backdrop:
-        radial-gradient(1100px 550px at 12% -8%, rgba(90,150,190,.25), transparent 60%),
-        radial-gradient(900px 520px at 100% 0%, rgba(60,110,150,.35), transparent 55%),
-        linear-gradient(165deg, #0b1520 0%, #0d1e30 35%, #0f2740 70%, #123252 100%);
-      --shadow-block: 0 1px 2px rgba(0,0,0,.4), 0 14px 30px -12px rgba(0,0,0,.55), 0 30px 60px -30px rgba(0,0,0,.6);
-      --shadow-tile: 0 1px 2px rgba(0,0,0,.3), 0 6px 14px -6px rgba(0,0,0,.4);
-      --shadow-tile-hover: 0 2px 4px rgba(0,0,0,.35), 0 12px 22px -8px rgba(0,0,0,.5);
-      --edge-top: rgba(255,255,255,.06);
-    }
-  }
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--backdrop);
-    background-attachment: fixed;
-    color: var(--fg);
-    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
-      "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
-    line-height: 1.75;
-    font-size: 17px;
-  }
-  a { color: var(--accent); }
-
-  .shell { max-width: 720px; margin: 0 auto; padding: 32px 16px 48px; }
-
-  .block {
-    background: var(--bg);
-    border-radius: 20px;
-    box-shadow: var(--shadow-block), inset 0 1px 0 var(--edge-top);
-    margin-bottom: 22px;
-    overflow: hidden;
-  }
-  .block:last-child { margin-bottom: 0; }
-  .wrap { padding: 0 28px; }
-
-  .topbar-row {
-    display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between;
-    padding: 14px 28px; border-bottom: 1px solid var(--line);
-    font-size: 14px; color: var(--muted);
-  }
-
-  header.hero .wrap { padding-top: 40px; padding-bottom: 36px; }
-  .role {
-    display: inline-block;
-    font-size: 13px;
-    letter-spacing: .04em;
-    color: var(--accent);
-    background: var(--accent-soft);
-    border-radius: 999px;
-    padding: 4px 12px;
-    margin-bottom: 18px;
-    box-shadow: 0 1px 0 rgba(0,0,0,.03) inset;
-  }
-  h1 { font-size: 40px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -.02em; }
-  .oneline { font-size: 21px; line-height: 1.55; margin: 0 0 10px; font-weight: 600; }
-  .oneline-src { font-size: 13px; color: var(--muted); margin: 0 0 22px; }
-  .lede { color: var(--muted); margin: 0 0 26px; }
-  nav.jump { display: flex; flex-wrap: wrap; gap: 8px; }
-  nav.jump a {
-    font-size: 14px;
-    text-decoration: none;
-    background: var(--card);
-    box-shadow: var(--shadow-tile);
-    border-radius: 8px;
-    padding: 7px 12px;
-    color: var(--fg);
-    transition: transform .15s ease, box-shadow .15s ease, color .15s ease;
-  }
-  nav.jump a:hover { color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-tile-hover); }
-
-  section.block .wrap { padding-top: 40px; padding-bottom: 40px; }
-  h2 {
-    font-size: 14px; letter-spacing: .08em; color: var(--muted); font-weight: 700;
-    margin: 0 0 24px; text-transform: uppercase; display: flex; align-items: center; gap: 9px;
-  }
-  h2::before { content: ""; width: 9px; height: 9px; border-radius: 3px; background: var(--accent); flex: none; }
-  h3 { font-size: 19px; margin: 0 0 8px; }
-  p { margin: 0 0 18px; }
-
-  .story p:first-of-type { font-size: 19px; font-weight: 600; }
-
-  .ability {
-    background: var(--card); box-shadow: var(--shadow-tile);
-    border-radius: 14px; padding: 22px; margin-bottom: 14px;
-    transition: box-shadow .15s ease, transform .15s ease;
-  }
-  .ability:hover { box-shadow: var(--shadow-tile-hover); transform: translateY(-1px); }
-  .ability:last-child { margin-bottom: 0; }
-  .ability h3 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .ability .note { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
-  .quote { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; margin: 0 0 12px; }
-  .quote:last-child { margin-bottom: 0; }
-  .quote .when { font-size: 13px; color: var(--accent); font-weight: 600; display: block; }
-  .quote .text { display: block; }
-  .quote .src { font-size: 12px; color: var(--muted); display: block; }
-
-  .numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
-  .num {
-    background: var(--card); box-shadow: var(--shadow-tile);
-    border-radius: 14px; padding: 18px; min-width: 0; overflow-wrap: break-word;
-    transition: box-shadow .15s ease, transform .15s ease;
-  }
-  .num:hover { box-shadow: var(--shadow-tile-hover); transform: translateY(-1px); }
-  .num .v { font-size: 26px; font-weight: 700; letter-spacing: -.01em; display: block; color: var(--accent); }
-  .num .k { font-size: 14px; display: block; margin-top: 4px; font-weight: 600; }
-  .num .b { font-size: 13px; color: var(--muted); display: block; }
-  .num .s { font-size: 12px; color: var(--muted); display: block; margin-top: 8px; }
-  .num .link {
-    font-size: 12px; color: var(--accent); display: block; margin-top: 10px;
-    padding-top: 10px; border-top: 1px dashed var(--line); font-weight: 600;
-  }
-  .numbers-note { color: var(--muted); font-size: 14px; margin: 20px 0 0; }
-
-  .work {
-    background: var(--card); box-shadow: var(--shadow-tile);
-    border-radius: 14px; padding: 22px; margin-bottom: 14px;
-    transition: box-shadow .15s ease, transform .15s ease;
-  }
-  .work:hover { box-shadow: var(--shadow-tile-hover); transform: translateY(-1px); }
-  .work:last-child { margin-bottom: 0; }
-  .work .no { font-size: 13px; color: var(--accent); font-weight: 600; }
-  .work p { margin: 8px 0 14px; color: var(--muted); }
-  .work a.btn {
-    display: inline-block; font-size: 14px; text-decoration: none; font-weight: 600;
-    background: var(--accent); color: #fff;
-    box-shadow: 0 6px 14px -6px var(--accent);
-    border-radius: 8px; padding: 8px 16px;
-    transition: transform .15s ease, box-shadow .15s ease;
-  }
-  .work a.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px -8px var(--accent); }
-  .work.pending { background: transparent; box-shadow: none; border: 1.5px dashed var(--line); }
-  .work.pending:hover { transform: none; }
-  .work.pending .badge { font-size: 13px; color: var(--muted); }
-
-  table.tasks { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 15px; }
-  table.tasks th, table.tasks td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  table.tasks th { font-size: 13px; color: var(--muted); font-weight: 600; }
-  table.tasks tbody tr:last-child td { border-bottom: none; }
-  table.tasks tbody tr { transition: background .15s ease; }
-  table.tasks tbody tr:hover { background: var(--card); }
-  table.tasks td.n { color: var(--muted); white-space: nowrap; }
-
-  footer.block .wrap { padding: 32px 0; text-align: center; }
-  footer .contact { font-size: 18px; margin: 0 0 10px; font-weight: 600; }
-  footer .meta { color: var(--muted); font-size: 13px; margin: 0; }
-
-  @media (max-width: 560px) {
-    .shell { padding: 20px 12px 36px; }
-    .block { border-radius: 16px; margin-bottom: 16px; }
-    .wrap { padding: 0 20px; }
-    .topbar-row { padding: 12px 20px; }
-    h1 { font-size: 31px; }
-    .oneline { font-size: 18px; }
-    body { font-size: 16px; }
-    header.hero .wrap { padding-top: 30px; padding-bottom: 28px; }
-    section.block .wrap { padding-top: 30px; padding-bottom: 30px; }
-  }
-</style>
+<link rel="stylesheet" href="자료/style.css">
 </head>
 <body>
 <div class="shell">
 
+<nav class="topnav">
+  <a href="#story">이야기</a>
+  <a href="#ability">세 가지 능력</a>
+  <a href="#peers">동료의 말</a>
+  <a href="#numbers">숫자</a>
+  <a href="#works">대표작</a>
+  <a href="#tasks">과제 기록</a>
+  <a class="now" href="이력서.html">이력서</a>
+</nav>
+
 <header class="block hero">
-  <div class="topbar-row">
-    <span>{{이름}} · {{목표}} 지원용</span>
-    {{다른버전_링크}}
-  </div>
   <div class="wrap">
     <span class="role">{{목표}}</span>
     <h1>{{이름}}</h1>
     <p class="oneline">{{한줄소개}}</p>
     <p class="oneline-src">— {{한줄소개_출처}}</p>
     <p class="lede">{{첫화면_보조문}}</p>
-    <nav class="jump">
-      <a href="#story">이야기</a>
-      <a href="#ability">세 가지 능력</a>
-      <a href="#numbers">숫자</a>
-      <a href="#works">대표작</a>
-      <a href="#tasks">과제 기록</a>
-    </nav>
+    <div class="cta">
+      <a class="btn-main" href="이력서.html">이력서 · 자기소개서 · 경력기술서 보기 →</a>
+      <a class="btn-sub" href="#story">3분 이야기 읽기</a>
+    </div>
+    <div class="hero-meta">
+      {{연락처_칩}}
+      {{다른버전_링크}}
+    </div>
   </div>
 </header>
 
 <section class="block" id="story"><div class="wrap">
-  <h2>이야기</h2>
+  <h2 data-no="01">이야기</h2>
+  <p class="sec-sub">고난에서 시작해 다시 일어나 지금에 이르기까지, 날짜가 있는 장면으로 적었습니다.</p>
   <div class="story">
 {{이야기_본문}}
   </div>
 </div></section>
 
 <section class="block" id="ability"><div class="wrap">
-  <h2>세 가지 능력이 드러난 기록</h2>
+  <h2 data-no="02">세 가지 능력이 드러난 기록</h2>
+  <p class="sec-sub">모두 아침·마무리 리추얼 기록의 원문이고, 날짜와 출처를 함께 적었습니다.</p>
+  <div class="abilities">
 {{능력_카드}}
+  </div>
+</div></section>
+
+<section class="block" id="peers"><div class="wrap">
+  <h2 data-no="03">{{동료의_말_제목}}</h2>
+  <p class="sec-sub">내가 쓴 말이 아니라, 같이 일한 사람이 기록에 남긴 말입니다.</p>
+  <div class="peers">
+{{동료의_말}}
+  </div>
+  <p class="peers-note">{{동료의_말_안내}}</p>
 </div></section>
 
 <section class="block" id="numbers"><div class="wrap">
-  <h2>숫자</h2>
+  <h2 data-no="04">숫자</h2>
+  <p class="sec-sub">회복탄력성과 과제지속력을 말이 아니라 기록에서 센 숫자로 적었습니다.</p>
   <div class="numbers">
 {{숫자_칸}}
   </div>
@@ -238,12 +73,16 @@
 </div></section>
 
 <section class="block" id="works"><div class="wrap">
-  <h2>대표작</h2>
+  <h2 data-no="05">대표작</h2>
+  <p class="sec-sub">로그인 없이 바로 열어 확인할 수 있습니다.</p>
+  <div class="works">
 {{대표작}}
+  </div>
 </div></section>
 
 <section class="block" id="tasks"><div class="wrap">
-  <h2>과제 기록</h2>
+  <h2 data-no="06">과제 기록</h2>
+  <p class="sec-sub">교육과정에서 만든 결과물과, 각 과제가 어느 능력에 해당하는지입니다.</p>
   <table class="tasks">
     <thead><tr><th>과제</th><th>한 일</th><th>능력</th></tr></thead>
     <tbody>

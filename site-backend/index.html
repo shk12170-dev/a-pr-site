@@ -5,237 +5,61 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>김상혁 — 백엔드 개발자</title>
 <meta name="description" content="2026년 9월 10일, 막힌 화면 앞에서 당황하지 않고 놓친 부분을 찾아 실습을 이어간 사람">
-<style>
-  :root {
-    --bg: #ffffff;
-    --fg: #16191d;
-    --muted: #5b6472;
-    --line: #e2e6eb;
-    --card: #f7f9fb;
-    --accent: #0f6f8c;
-    --accent-soft: #e6f2f6;
-    --backdrop:
-      radial-gradient(1100px 550px at 12% -8%, rgba(255,255,255,.65), transparent 60%),
-      radial-gradient(900px 520px at 100% 0%, rgba(190,238,255,.75), transparent 55%),
-      linear-gradient(165deg, #eaf7ff 0%, #d3edff 32%, #a9dcff 66%, #7cc6ff 100%);
-    --shadow-block: 0 1px 2px rgba(15,90,140,.08), 0 10px 24px -10px rgba(15,90,140,.28), 0 28px 56px -28px rgba(15,90,140,.24);
-    --shadow-tile: 0 1px 2px rgba(15,90,140,.06), 0 6px 14px -6px rgba(15,90,140,.18);
-    --shadow-tile-hover: 0 2px 4px rgba(15,90,140,.08), 0 12px 22px -8px rgba(15,90,140,.24);
-    --edge-top: rgba(255,255,255,.6);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #171b20;
-      --fg: #eceef1;
-      --muted: #9aa4b2;
-      --line: #2a2f36;
-      --card: #1f242b;
-      --accent: #5fc3e4;
-      --accent-soft: #232a33;
-      --backdrop:
-        radial-gradient(1100px 550px at 12% -8%, rgba(90,150,190,.25), transparent 60%),
-        radial-gradient(900px 520px at 100% 0%, rgba(60,110,150,.35), transparent 55%),
-        linear-gradient(165deg, #0b1520 0%, #0d1e30 35%, #0f2740 70%, #123252 100%);
-      --shadow-block: 0 1px 2px rgba(0,0,0,.4), 0 14px 30px -12px rgba(0,0,0,.55), 0 30px 60px -30px rgba(0,0,0,.6);
-      --shadow-tile: 0 1px 2px rgba(0,0,0,.3), 0 6px 14px -6px rgba(0,0,0,.4);
-      --shadow-tile-hover: 0 2px 4px rgba(0,0,0,.35), 0 12px 22px -8px rgba(0,0,0,.5);
-      --edge-top: rgba(255,255,255,.06);
-    }
-  }
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--backdrop);
-    background-attachment: fixed;
-    color: var(--fg);
-    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
-      "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
-    line-height: 1.75;
-    font-size: 17px;
-  }
-  a { color: var(--accent); }
-
-  .shell { max-width: 720px; margin: 0 auto; padding: 32px 16px 48px; }
-
-  .block {
-    background: var(--bg);
-    border-radius: 20px;
-    box-shadow: var(--shadow-block), inset 0 1px 0 var(--edge-top);
-    margin-bottom: 22px;
-    overflow: hidden;
-  }
-  .block:last-child { margin-bottom: 0; }
-  .wrap { padding: 0 28px; }
-
-  .topbar-row {
-    display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between;
-    padding: 14px 28px; border-bottom: 1px solid var(--line);
-    font-size: 14px; color: var(--muted);
-  }
-
-  header.hero .wrap { padding-top: 40px; padding-bottom: 36px; }
-  .role {
-    display: inline-block;
-    font-size: 13px;
-    letter-spacing: .04em;
-    color: var(--accent);
-    background: var(--accent-soft);
-    border-radius: 999px;
-    padding: 4px 12px;
-    margin-bottom: 18px;
-    box-shadow: 0 1px 0 rgba(0,0,0,.03) inset;
-  }
-  h1 { font-size: 40px; line-height: 1.2; margin: 0 0 14px; letter-spacing: -.02em; }
-  .oneline { font-size: 21px; line-height: 1.55; margin: 0 0 10px; font-weight: 600; }
-  .oneline-src { font-size: 13px; color: var(--muted); margin: 0 0 22px; }
-  .lede { color: var(--muted); margin: 0 0 26px; }
-  nav.jump { display: flex; flex-wrap: wrap; gap: 8px; }
-  nav.jump a {
-    font-size: 14px;
-    text-decoration: none;
-    background: var(--card);
-    box-shadow: var(--shadow-tile);
-    border-radius: 8px;
-    padding: 7px 12px;
-    color: var(--fg);
-    transition: transform .15s ease, box-shadow .15s ease, color .15s ease;
-  }
-  nav.jump a:hover { color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-tile-hover); }
-
-  section.block .wrap { padding-top: 40px; padding-bottom: 40px; }
-  h2 {
-    font-size: 14px; letter-spacing: .08em; color: var(--muted); font-weight: 700;
-    margin: 0 0 24px; text-transform: uppercase; display: flex; align-items: center; gap: 9px;
-  }
-  h2::before { content: ""; width: 9px; height: 9px; border-radius: 3px; background: var(--accent); flex: none; }
-  h3 { font-size: 19px; margin: 0 0 8px; }
-  p { margin: 0 0 18px; }
-
-  .story p:first-of-type { font-size: 19px; font-weight: 600; }
-
-  .ability {
-    background: var(--card); box-shadow: var(--shadow-tile);
-    border-radius: 14px; padding: 22px; margin-bottom: 14px;
-    transition: box-shadow .15s ease, transform .15s ease;
-  }
-  .ability:hover { box-shadow: var(--shadow-tile-hover); transform: translateY(-1px); }
-  .ability:last-child { margin-bottom: 0; }
-  .ability h3 { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .ability .note { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
-  .quote { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; margin: 0 0 12px; }
-  .quote:last-child { margin-bottom: 0; }
-  .quote .when { font-size: 13px; color: var(--accent); font-weight: 600; display: block; }
-  .quote .text { display: block; }
-  .quote .src { font-size: 12px; color: var(--muted); display: block; }
-
-  .numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
-  .num {
-    background: var(--card); box-shadow: var(--shadow-tile);
-    border-radius: 14px; padding: 18px; min-width: 0; overflow-wrap: break-word;
-    transition: box-shadow .15s ease, transform .15s ease;
-  }
-  .num:hover { box-shadow: var(--shadow-tile-hover); transform: translateY(-1px); }
-  .num .v { font-size: 26px; font-weight: 700; letter-spacing: -.01em; display: block; color: var(--accent); }
-  .num .k { font-size: 14px; display: block; margin-top: 4px; font-weight: 600; }
-  .num .b { font-size: 13px; color: var(--muted); display: block; }
-  .num .s { font-size: 12px; color: var(--muted); display: block; margin-top: 8px; }
-  .num .link {
-    font-size: 12px; color: var(--accent); display: block; margin-top: 10px;
-    padding-top: 10px; border-top: 1px dashed var(--line); font-weight: 600;
-  }
-  .numbers-note { color: var(--muted); font-size: 14px; margin: 20px 0 0; }
-
-  .work {
-    background: var(--card); box-shadow: var(--shadow-tile);
-    border-radius: 14px; padding: 22px; margin-bottom: 14px;
-    transition: box-shadow .15s ease, transform .15s ease;
-  }
-  .work:hover { box-shadow: var(--shadow-tile-hover); transform: translateY(-1px); }
-  .work:last-child { margin-bottom: 0; }
-  .work .no { font-size: 13px; color: var(--accent); font-weight: 600; }
-  .work p { margin: 8px 0 14px; color: var(--muted); }
-  .work a.btn {
-    display: inline-block; font-size: 14px; text-decoration: none; font-weight: 600;
-    background: var(--accent); color: #fff;
-    box-shadow: 0 6px 14px -6px var(--accent);
-    border-radius: 8px; padding: 8px 16px;
-    transition: transform .15s ease, box-shadow .15s ease;
-  }
-  .work a.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px -8px var(--accent); }
-  .work.pending { background: transparent; box-shadow: none; border: 1.5px dashed var(--line); }
-  .work.pending:hover { transform: none; }
-  .work.pending .badge { font-size: 13px; color: var(--muted); }
-
-  table.tasks { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 15px; }
-  table.tasks th, table.tasks td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  table.tasks th { font-size: 13px; color: var(--muted); font-weight: 600; }
-  table.tasks tbody tr:last-child td { border-bottom: none; }
-  table.tasks tbody tr { transition: background .15s ease; }
-  table.tasks tbody tr:hover { background: var(--card); }
-  table.tasks td.n { color: var(--muted); white-space: nowrap; }
-
-  footer.block .wrap { padding: 32px 0; text-align: center; }
-  footer .contact { font-size: 18px; margin: 0 0 10px; font-weight: 600; }
-  footer .meta { color: var(--muted); font-size: 13px; margin: 0; }
-
-  @media (max-width: 560px) {
-    .shell { padding: 20px 12px 36px; }
-    .block { border-radius: 16px; margin-bottom: 16px; }
-    .wrap { padding: 0 20px; }
-    .topbar-row { padding: 12px 20px; }
-    h1 { font-size: 31px; }
-    .oneline { font-size: 18px; }
-    body { font-size: 16px; }
-    header.hero .wrap { padding-top: 30px; padding-bottom: 28px; }
-    section.block .wrap { padding-top: 30px; padding-bottom: 30px; }
-  }
-</style>
+<link rel="stylesheet" href="자료/style.css">
 </head>
 <body>
 <div class="shell">
 
+<nav class="topnav">
+  <a href="#story">이야기</a>
+  <a href="#ability">세 가지 능력</a>
+  <a href="#peers">동료의 말</a>
+  <a href="#numbers">숫자</a>
+  <a href="#works">대표작</a>
+  <a href="#tasks">과제 기록</a>
+  <a class="now" href="이력서.html">이력서</a>
+</nav>
+
 <header class="block hero">
-  <div class="topbar-row">
-    <span>김상혁 · 백엔드 개발자 지원용</span>
-    
-  </div>
   <div class="wrap">
     <span class="role">백엔드 개발자</span>
     <h1>김상혁</h1>
     <p class="oneline">2026년 9월 10일, 막힌 화면 앞에서 당황하지 않고 놓친 부분을 찾아 실습을 이어간 사람</p>
     <p class="oneline-src">— 리추얼 기록 2026-09-10 마무리</p>
     <p class="lede">군에서의 고난을 지나 교육과정 27일의 기록으로 다시 일어난 과정을, 날짜와 숫자로 확인할 수 있게 적었습니다.</p>
-    <nav class="jump">
-      <a href="#story">이야기</a>
-      <a href="#ability">세 가지 능력</a>
-      <a href="#numbers">숫자</a>
-      <a href="#works">대표작</a>
-      <a href="#tasks">과제 기록</a>
-    </nav>
+    <div class="cta">
+      <a class="btn-main" href="이력서.html">이력서 · 자기소개서 · 경력기술서 보기 →</a>
+      <a class="btn-sub" href="#story">3분 이야기 읽기</a>
+    </div>
+    <div class="hero-meta">
+      <a href="mailto:shk12170@gmail.com">✉ shk12170@gmail.com</a>
+      
+    </div>
   </div>
 </header>
 
 <section class="block" id="story"><div class="wrap">
-  <h2>이야기</h2>
+  <h2 data-no="01">이야기</h2>
+  <p class="sec-sub">고난에서 시작해 다시 일어나 지금에 이르기까지, 날짜가 있는 장면으로 적었습니다.</p>
   <div class="story">
     <p>2022년 4월, 부사관 복무 4년차, 나는 GOP 근무지로 발령을 받았다.</p>
     <p>2017년 10월에 병사로 입대해 2019년 7월에 전역하고, 곧바로 부사관으로 군생활에 이어갔다. GOP 부대에서의 생활은 2주에 하루 외박을 빼면 출퇴근이라는 구분 자체가 없었다. 몸이 힘든 것보다 견디기 어려웠던 건, 답답할 때 내가 고를 수 있는 선택지가 거의 없다는 사실이었다. 압박감은 시간이 갈수록 커졌고, 결국 심신 회복이 필요하다는 판단에 따라 원소속 부대로 복귀했다. 스스로 버텨내지 못했다는 부끄러움과 그곳에서 벗어났다는 안도감이 같이 밀려온 날이었다.</p>
-    <p>파견 근무를 거치며 생활 리듬을 되찾고 남은 복무를 마친 뒤 전역했다. 다음 단계를 고민하다, AI를 다룰 수 있게 되면 쓸 데가 있겠다는 생각으로 SKT ALEPH 교육과정에 신청서를 냈다.</p>
+    <p>2026년 7월, 파견 근무를 거쳐 생활 리듬을 되찾고 남은 복무를 마친 뒤 전역했다. 다음 단계를 고민하다, AI를 다룰 수 있게 되면 쓸 데가 있겠다는 생각으로 SKT ALEPH 교육과정에 신청서를 냈다.</p>
     <p>2026년 8월, 교육과정이 시작되자 벽은 다른 모양으로 다시 나타났다. 실습 중 오류 하나가 그날 진도를 통째로 막았다. 철책과 화면의 붉은 오류 메시지는 전혀 달랐지만, 앞으로 나가고 싶은데 나갈 수 없다는 느낌은 같았다.</p>
-    <p>달라진 건 이번에는 방법을 내가 만들 수 있었다는 점이다. 8월 25일 마무리 기록에 &quot;오후 쉬는시간에 &#x27;나는 할 수 있다&#x27;고 속으로 외쳤다&quot;고 적었고, 다음 날 아침에는 그 방법을 한 번 더 쓰겠다고 적었다. 처음에는 혼잣말이었지만, 9월 9일에는 &quot;막히는 부분에 대해 심호흡하면서 &#x27;나는 할 수 있다&#x27;라고 속으로 얘기하고 실습을 이어나가 무사히 마쳤다&quot;가 되었다.</p>
-    <p>혼자 버티지도 않았다. 막히면 누구에게 무엇을 도움받았는지 기록에 구체적으로 남겼다. 8월 27일 아침에는 &quot;말 한마디에 의미가 있다고 생각하고 타인의 마음을 생각해보고 얘기하자&quot;고 적었다. 9월 16일 아침, 동료는 내 장점을 &quot;먼저 인사해주시고 편하게 이야기 나눠주셔서 아침 분위기가 한층 더 좋아졌습니다&quot;라고 적어주었다. 내가 쓴 말이 아니라 옆에서 본 사람이 쓴 말이다.</p>
+    <p>8월 25일 오후 쉬는 시간, 나는 속으로 한 문장을 외웠다. 그날 마무리 기록에 &quot;오후 쉬는시간에 &#x27;나는 할 수 있다&#x27;고 속으로 외쳤다&quot;고 적었고, 다음 날 아침에는 그 방법을 한 번 더 쓰겠다고 적었다. 처음에는 혼잣말이었지만, 9월 9일에는 &quot;막히는 부분에 대해 심호흡하면서 &#x27;나는 할 수 있다&#x27;라고 속으로 얘기하고 실습을 이어나가 무사히 마쳤다&quot;가 되었다. 달라진 건 이번에는 방법을 내가 만들 수 있었다는 점이다.</p>
+    <p>8월 27일 아침에는 &quot;말 한마디에 의미가 있다고 생각하고 타인의 마음을 생각해보고 얘기하자&quot;고 적었다. 혼자 버티지도 않았다. 막히면 누구에게 무엇을 도움받았는지 기록에 구체적으로 남겼다. 9월 16일 아침, 동료는 내 장점을 &quot;먼저 인사해주시고 편하게 이야기 나눠주셔서 아침 분위기가 한층 더 좋아졌습니다&quot;라고 적어주었다. 내가 쓴 말이 아니라 옆에서 본 사람이 쓴 말이다.</p>
     <p>9월 10일 기록은 &quot;막힌 부분에 대해 당황하지 않고 놓친 부분을 파악하여 차분한 진행으로 실습에 따랐다&quot;였다. 9월 16일에는 &quot;포기하지 않는 끈기를 바탕으로 바이브코딩 능력이 향상되고 있다&quot;고 적었다. 당황이 사라진 것은 아니다. 당황한 채로도 다음 걸음을 뗄 수 있게 된 것이다.</p>
     <p>8월 기록과 9월 기록을 나란히 놓으면 차이가 눈에 보인다. 8월에는 &quot;일부 했다&quot;로 끝나는 마무리가 많았고, 9월에는 &quot;했다&quot;로 끝나는 마무리가 많아졌다. 이 사이트의 숫자 칸은 그 기록을 그대로 센 것이다.</p>
-    <p>그 사이 과제 결과물이 하나씩 쌓였다. 정적 페이지에서 시작해 데이터 구조를 설계하고, 로그인과 권한을 붙이고, 비밀번호 없이 패스키로만 열리는 영역을 만들고, 공개 데이터로 가설을 검증한 논문 한 편과 3만 자 원고를 마쳤다. 지금도 저녁마다 그날 한 일을 한 줄 적는다.</p>
+    <p>2026년 9월까지 과제 결과물이 하나씩 쌓였다. 정적 페이지에서 시작해 데이터 구조를 설계하고, 로그인과 권한을 붙이고, 비밀번호 없이 패스키로만 열리는 영역을 만들고, 공개 데이터로 가설을 검증한 논문 한 편과 3만 자 원고를 마쳤다. 지금도 저녁마다 그날 한 일을 한 줄 적는다.</p>
     <p>갇혀 있다는 감각이 완전히 사라지지는 않았다. 다만 그 앞에서 무엇을 해볼지는 이제 내가 정한다.</p>
     <p>지금은 정보처리기사와 SQL 자격증을 준비하며, 내년 하반기 백엔드 개발자 취업을 목표로 하고 있습니다.</p>
   </div>
 </div></section>
 
 <section class="block" id="ability"><div class="wrap">
-  <h2>세 가지 능력이 드러난 기록</h2>
+  <h2 data-no="02">세 가지 능력이 드러난 기록</h2>
+  <p class="sec-sub">모두 아침·마무리 리추얼 기록의 원문이고, 날짜와 출처를 함께 적었습니다.</p>
+  <div class="abilities">
     <article class="ability">
       <h3>자기조절력</h3>
       <p class="note">오류 앞에서 멈추지 않고 다시 화면으로 돌아오는 순서를 스스로 만들었습니다. 인증 로직처럼 원인이 눈에 안 보이는 문제에서 특히 필요했던 힘입니다.</p>
@@ -254,10 +78,24 @@
       <blockquote class="quote"><span class="when">2026-09-10 · 마무리</span><span class="text">“막힌 부분에 대해 당황하지 않고 놓친 부분을 파악하여 차분한 진행으로 실습에 따랐다”</span><span class="src">리추얼 기록 2026-09-10 마무리</span></blockquote>
       <blockquote class="quote"><span class="when">2026-09-16 · 아침 · 그 결과와 알게 된 점</span><span class="text">“포기하지 않는 끈기를 바탕으로 바이브코딩 능력이 향상되고 있다”</span><span class="src">리추얼 기록 2026-09-16 아침</span></blockquote>
     </article>
+  </div>
+</div></section>
+
+<section class="block" id="peers"><div class="wrap">
+  <h2 data-no="03">함께 일한 동료가 적어 준 말</h2>
+  <p class="sec-sub">내가 쓴 말이 아니라, 같이 일한 사람이 기록에 남긴 말입니다.</p>
+  <div class="peers">
+    <blockquote class="peer"><span class="tag">협업</span><span class="q">“어떤 피드백이든 열린 마음으로 유연하게 받아들이고 빠르게 자기 것으로 발전시켜 나가는 태도가 인상 깊었습니다.”</span><span class="m">리추얼 기록 2026-08-27 · 아침 · 동료가 말해 준 내 장점</span></blockquote>
+    <blockquote class="peer"><span class="tag">업무</span><span class="q">“힘든 순간에도 늘 주위를 차분하게 살피고, 맡은 일을 묵묵히 책임감 있게 해내서 주변 사람들에게 큰 안정감을 줍니다.”</span><span class="m">리추얼 기록 2026-09-03 · 아침 · 동료가 말해 준 내 장점</span></blockquote>
+    <blockquote class="peer"><span class="tag">업무</span><span class="q">“막히는 부분에 대해 집요하게 파고들어 해결하고자 하는 노력과 끈기를 칭찬합니다.”</span><span class="m">리추얼 기록 2026-09-04 · 아침 · 동료가 말해 준 내 장점</span></blockquote>
+    <blockquote class="peer"><span class="tag">협업</span><span class="q">“질문이 자연스러운 분위기로 부드럽게 만들어준다”</span><span class="m">리추얼 기록 2026-08-21 · 아침 · 동료가 말해 준 내 장점</span></blockquote>
+  </div>
+  <p class="peers-note">리추얼 기록의 “동료가 말해 준 내 장점” 칸에 동료들이 직접 적어 준 문장을 날짜와 함께 옮긴 것입니다. 내가 쓴 말이 아니라 같이 일한 사람이 쓴 말이고, 동료 이름은 넣지 않았습니다.</p>
 </div></section>
 
 <section class="block" id="numbers"><div class="wrap">
-  <h2>숫자</h2>
+  <h2 data-no="04">숫자</h2>
+  <p class="sec-sub">회복탄력성과 과제지속력을 말이 아니라 기록에서 센 숫자로 적었습니다.</p>
   <div class="numbers">
     <div class="num"><span class="v">27일</span><span class="k">리추얼 기록</span><span class="b">아침 27 · 마무리 26</span><span class="s">출처: 내 리추얼 기록 (2026-08-11 ~ 2026-09-17)</span></div>
     <div class="num"><span class="v">12 → 7</span><span class="k">&quot;일부 했다&quot;로 끝난 마무리</span><span class="b">2026-08 → 2026-09</span><span class="s">출처: 내 리추얼 기록 (마무리 칸 문장을 그대로 셈)</span><span class="link">이야기 속 고난 장면과 연결: 오류에 막혀 &quot;일부 했다&quot;만 쓸 수 있던 8월이, 9월 들어 &quot;했다&quot;로 자주 바뀌었습니다.</span></div>
@@ -271,7 +109,9 @@
 </div></section>
 
 <section class="block" id="works"><div class="wrap">
-  <h2>대표작</h2>
+  <h2 data-no="05">대표작</h2>
+  <p class="sec-sub">로그인 없이 바로 열어 확인할 수 있습니다.</p>
+  <div class="works">
     <article class="work">
       <span class="no">8번 과제</span>
       <h3>패스키 포트폴리오 (WebAuthn)</h3>
@@ -288,12 +128,14 @@
       <span class="no">13번 과제</span>
       <h3>앱 (예정)</h3>
       <p>10번 논문의 결과를 실제로 쓸 수 있는 형태로 옮기는 과제입니다. 완료 후 이 자리에 결과물과 소스 링크를 넣습니다.</p>
-      <span class="badge">아직 진행 전입니다. 13번 과제를 마치면 이 자리에 결과물과 소스 링크가 들어갑니다.</span>
+      <span class="badge">예정일 2026년 9월 24일. 그날 과제를 마치면 이 자리에 결과물과 소스 링크가 들어갑니다.</span>
     </article>
+  </div>
 </div></section>
 
 <section class="block" id="tasks"><div class="wrap">
-  <h2>과제 기록</h2>
+  <h2 data-no="06">과제 기록</h2>
+  <p class="sec-sub">교육과정에서 만든 결과물과, 각 과제가 어느 능력에 해당하는지입니다.</p>
   <table class="tasks">
     <thead><tr><th>과제</th><th>한 일</th><th>능력</th></tr></thead>
     <tbody>
@@ -307,13 +149,13 @@
       <tr><td class="n">9번</td><td><strong><a href="https://agent-ritual.vercel.app">리추얼 기록에서 강점 찾기</a></strong><br>날짜와 원문이 붙은 강점 지도와 1인칭 서사를 만들었고, 두 사람 모두 과장이 없다고 답했다.</td><td class="n">대인관계력</td></tr>
       <tr><td class="n">10번</td><td><strong>논문 — CNCF 프로젝트의 기여자 수와 이슈 처리 시간</strong><br>가설을 끼워 맞추지 않고 그대로 기각하고, 왜 반대로 나왔는지를 선행 연구 4편을 근거로 적었다. 원자료와 수집·분석 스크립트를 함께 공개해 다시 돌릴 수 있게 했다.</td><td class="n">자기동기력</td></tr>
       <tr><td class="n">11번</td><td><strong>장편 원고 『갇힌 방에서 나가는 법』</strong><br>공백 제외 30,056자 원고와 대조표, 수정 기록을 남겼다. 지어낸 장면을 넣지 않는다는 기준을 문서로 명시했다.</td><td class="n">자기조절력</td></tr>
-      <tr><td class="n">13번</td><td>앱 (예정)</td><td class="n">—</td></tr>
+      <tr><td class="n">13번</td><td>앱 (예정 — 2026년 9월 24일)</td><td class="n">—</td></tr>
     </tbody>
   </table>
 </div></section>
 
 <footer class="block"><div class="wrap">
-  <p class="contact">연락: <a href="mailto:shk12170@gmail.com">shk12170@gmail.com</a></p>
+  <p class="contact">E-mail: <a href="mailto:shk12170@gmail.com">shk12170@gmail.com</a></p>
   <p class="meta">이 페이지는 장치(build.py)가 리추얼 기록·과제 목록·출석 파일에서 다시 만든 것입니다. 본인 이름과 위 연락 수단 외의 개인정보는 넣지 않았고, 동료는 모두 "동료"로만 적었습니다.</p>
 </div></footer>
 

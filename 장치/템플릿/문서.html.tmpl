@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{이름}} — 이력서 · 자기소개서 · 경력기술서</title>
+<meta name="description" content="{{이름}}의 이력서, 자기소개서, 경력기술서입니다.">
+<link rel="stylesheet" href="자료/style.css">
+</head>
+<body>
+<div class="shell">
+
+<nav class="topnav">
+  <a href="index.html">← 소개 사이트</a>
+  <a href="#resume">이력서</a>
+  <a href="#cover">자기소개서</a>
+  <a href="#career">경력기술서</a>
+</nav>
+
+<header class="block hero">
+  <div class="wrap">
+    <span class="role">이력서 · 자기소개서 · 경력기술서</span>
+    <h1>{{이름}}</h1>
+    <p class="oneline">{{한줄소개}}</p>
+    <p class="lede">아래 내용을 그대로 읽어도 되고, Word 파일로 받아 지원서에 붙여도 됩니다.</p>
+    <div class="cta">
+{{문서_내려받기}}
+      <a class="btn-sub" href="index.html">소개 사이트로 돌아가기</a>
+    </div>
+  </div>
+</header>
+
+<section class="block" id="resume"><div class="wrap doc">
+  <h2 data-no="01">이력서</h2>
+{{이력서}}
+</div></section>
+
+<section class="block" id="cover"><div class="wrap doc">
+  <h2 data-no="02">자기소개서</h2>
+{{자기소개서}}
+</div></section>
+
+<section class="block" id="career"><div class="wrap doc">
+  <h2 data-no="03">경력기술서</h2>
+{{경력기술서}}
+</div></section>
+
+<footer class="block"><div class="wrap">
+  <p class="contact">{{연락처}}</p>
+  <p class="meta">{{하단_안내}}</p>
+</div></footer>
+
+</div>
+</body>
+</html>

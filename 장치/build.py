@@ -16,6 +16,7 @@ from __future__ import annotations
 import html
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -297,9 +298,15 @@ def 대표작_html(트랙메타) -> str:
             f'      <p>{html.escape(w["설명"])}</p>\n'
         )
         if 예정:
+            예정일 = w.get("예정일", "").strip()
+            안내 = (
+                f"예정일 {html.escape(예정일)}. 그날 과제를 마치면 이 자리에 결과물과 소스 링크가 들어갑니다."
+                if 예정일
+                else "아직 진행 전입니다. 과제를 마치면 이 자리에 결과물과 소스 링크가 들어갑니다."
+            )
             덩어리.append(
                 f'    <article class="work pending">\n{머리}'
-                f'      <span class="badge">아직 진행 전입니다. 13번 과제를 마치면 이 자리에 결과물과 소스 링크가 들어갑니다.</span>\n'
+                f'      <span class="badge">{안내}</span>\n'
                 f"    </article>"
             )
         else:
@@ -343,13 +350,123 @@ def 연락처_html() -> str:
     return f'{문구}: <a href="mailto:{안전}">{안전}</a>'
 
 
+def 동료의_말_읽기():
+    경로 = 승인문장 / "동료의_말.json"
+    if not 경로.exists():
+        return None
+    자료 = 읽기(경로)
+    자료["말"] = [m for m in 자료["말"] if m.get("승인")]
+    return 자료
+
+
+def 동료의_말_html(자료) -> str:
+    덩어리 = []
+    for m in 자료["말"]:
+        묶음 = f'<span class="tag">{html.escape(m["묶음"])}</span>' if m.get("묶음") else ""
+        덩어리.append(
+            f'    <blockquote class="peer">'
+            f"{묶음}"
+            f'<span class="q">“{html.escape(m["인용"])}”</span>'
+            f'<span class="m">리추얼 기록 {html.escape(m["날짜"])} · {html.escape(m["칸"])}</span>'
+            f"</blockquote>"
+        )
+    return "\n".join(덩어리)
+
+
+def 문서파일_이름() -> str:
+    후보 = sorted((사업장 / "문서").glob("*.docx"))
+    return 후보[0].name if 후보 else ""
+
+
+def 연락처_칩_html() -> str:
+    연락 = 읽기(본문폴더 / "연락처.json")
+    주소 = 연락.get("이메일", "").strip()
+    if not 주소:
+        return '<span>연락 수단 미정</span>'
+    안전 = html.escape(주소)
+    return f'<a href="mailto:{안전}">✉ {안전}</a>'
+
+
 def 다른버전_html(설정) -> str:
     """다른 트랙 사이트 주소가 설정에 있을 때만 상단 링크를 보여준다."""
     url = 설정.get("다른버전_주소", "").strip()
     if not url:
         return ""
     이름 = html.escape(설정.get("다른버전_이름", "다른 버전"))
-    return f'<a href="{html.escape(url)}">{이름} 보기 →</a>'
+    return f'<a href="{html.escape(url)}">↗ {이름}</a>'
+
+
+def 문서페이지만들기(메타, 정보, 과제자료, 숫자, 출력, 값):
+    """이력서·자기소개서·경력기술서를 한 페이지로 보여 주는 이력서.html 을 만든다 (첫 화면 배너의 목적지)."""
+    기본 = 읽기(본문폴더 / "이력_기본정보.json")
+    과제들 = [
+        t for t in sorted(과제자료["과제"], key=lambda x: x["번호"])
+        if 메타["track_id"] in t["트랙"] and t.get("상태") != "예정"
+    ]
+
+    이력 = ["  <p class=\"sub\">지원 직무 · " + html.escape(메타["목표"]) + "</p>", "  <h3>교육</h3>", "  <ul>"]
+    이력 += [f'    <li><strong>{html.escape(e["기간"])}</strong> {html.escape(e["이름"])} — {html.escape(e["내용"])}</li>' for e in 기본["교육"]]
+    이력 += ["  </ul>", "  <h3>경력</h3>", "  <ul>"]
+    이력 += [f'    <li><strong>{html.escape(m["기간"])}</strong> {html.escape(m["소속"])} — {html.escape(m["구분"])}</li>' for m in 기본["군경력"]]
+    이력 += ["  </ul>", "  <h3>프로젝트 (교육과정 과제)</h3>", "  <ul>"]
+    for t in 과제들:
+        링크 = f' — <a href="{html.escape(t["공개URL"])}">{html.escape(t["공개URL"])}</a>' if t["공개URL"] else ""
+        이력.append(f'    <li><strong>{t["번호"]}번 {html.escape(t["이름"])}</strong>{링크}</li>')
+    이력 += ["  </ul>", "  <h3>자격</h3>", "  <ul>"]
+    이력 += [f'    <li>{html.escape(c["이름"])} ({html.escape(c["상태"])})</li>' for c in 기본["자격증"]]
+    이력 += ["  </ul>", "  <h3>기록으로 본 숫자</h3>", '  <div class="numbers">', 숫자_html(숫자), "  </div>"]
+
+    장면들 = [s for s in 읽기(승인문장 / "능력별_장면.json")["장면"] if s.get("승인")]
+    소개 = [본문_html(), f'    <p>{html.escape(메타["마무리_목표문"])}</p>', "  <h3>기록으로 확인되는 세 가지 능력</h3>", 능력_html(메타)]
+
+    경력 = []
+    for t in 과제들:
+        경력.append(f'  <h3>{t["번호"]}번 — {html.escape(t["이름"])}</h3>')
+        경력.append("  <ul>")
+        경력.append(f'    <li><strong>해당 능력</strong>: {html.escape(t["능력"])}</li>')
+        경력.append(f'    <li><strong>상황</strong>: {html.escape(t["상황"])}</li>')
+        경력.append(f'    <li><strong>행동</strong>: {html.escape(t["행동"])}</li>')
+        경력.append(f'    <li><strong>결과</strong>: {html.escape(t["결과"])}</li>')
+        if t["공개URL"]:
+            경력.append(f'    <li><strong>확인</strong>: <a href="{html.escape(t["공개URL"])}">{html.escape(t["공개URL"])}</a> (로그인 없이 열림)</li>')
+        경력.append("  </ul>")
+    예정 = [t for t in 과제자료["과제"] if t.get("상태") == "예정"]
+    if 예정:
+        경력.append("  <h3>진행 예정</h3>")
+        경력.append("  <ul>")
+        경력 += [f'    <li>{t["번호"]}번 {html.escape(t["이름"])} — 완료 후 이 문서에 추가합니다.</li>' for t in 예정]
+        경력.append("  </ul>")
+
+    docx = 문서파일_이름()
+    if docx:
+        shutil.copyfile(사업장 / "문서" / docx, 출력 / "자료" / docx)
+        내려받기 = f'      <a class="btn-main" href="자료/{html.escape(docx)}">Word 파일로 내려받기 ↓</a>'
+    else:
+        내려받기 = '      <span class="btn-sub">Word 파일은 node 장치/문서_docx.js 를 실행하면 만들어집니다</span>'
+
+    페이지값 = {
+        "{{이름}}": 값["{{이름}}"],
+        "{{목표}}": 값["{{목표}}"],
+        "{{한줄소개}}": 값["{{한줄소개}}"],
+        "{{문서_내려받기}}": 내려받기,
+        "{{이력서}}": "\n".join(이력),
+        "{{자기소개서}}": "\n".join(소개),
+        "{{경력기술서}}": "\n".join(경력),
+        "{{연락처}}": 값["{{연락처}}"],
+        "{{하단_안내}}": 값["{{하단_안내}}"],
+    }
+    페이지 = (장치 / "템플릿" / "문서.html.tmpl").read_text(encoding="utf-8")
+    for 키, 내용 in 페이지값.items():
+        페이지 = 페이지.replace(키, 내용)
+    남은 = re.findall(r"\{\{[^}]+\}\}", 페이지)
+    if 남은:
+        raise SystemExit(f"[중단] 이력서 페이지에서 채우지 못한 자리: {sorted(set(남은))}")
+    (출력 / "이력서.html").write_text(페이지, encoding="utf-8")
+    print(f"[완료] {출력.name}/이력서.html" + (f", 자료/{docx}" if docx else ""))
+
+
+def 이름표_문서(메타) -> str:
+    return f"문서/{메타['이름']}_{메타['목표'].replace(' ', '')}_이력서_자기소개서_경력기술서.docx"
 
 
 def 제출물만들기(설정, 메타, 정보, 숫자, 과제자료):
@@ -390,15 +507,19 @@ def 제출물만들기(설정, 메타, 정보, 숫자, 과제자료):
         "",
         "## 문서와 장치는 어디에 있나요",
         "",
-        "제출한 ZIP(`제출_문서와장치.zip`)을 풀면 폴더 세 개가 나옵니다. 비밀번호는 없습니다.",
+        "제출한 ZIP(`제출_문서와장치.zip`)을 풀면 폴더 네 개가 나옵니다. 비밀번호는 없습니다.",
         "",
         "| 폴더 | 내용 |",
         "|---|---|",
-        f"| `문서/` | `{꼬리}_이력서.md`, `{꼬리}_자기소개서.md`, `{꼬리}_경력기술서.md` 3개 |",
+        f"| `문서/` | `{꼬리}_이력서.md`, `{꼬리}_자기소개서.md`, `{꼬리}_경력기술서.md` 3개와, 세 문서를 한 파일에 담은 Word 문서(`.docx`) |",
+        "| `제출물/` | 이 짧은 확인 방법, 제출문(AI와 나의 판단 세 줄), 두 번 실행한 결과 비교(`재현성_확인.md`) |",
         "| `장치/` | 실행 파일 `build.py`, 돌리는 방법을 적은 `README.md`, 입력 파일, 마지막 실행 결과(`마지막결과/`) |",
         "| `본문/` | 장치가 읽는 자기소개 본문과 사이트 설정. 장치를 돌리려면 이 폴더가 함께 있어야 합니다 |",
         "",
         "장치를 돌리는 방법은 `장치/README.md`의 3단계에 있습니다. 같은 입력이면 같은 결과가 나옵니다.",
+        "",
+        "같은 폴더에서 두 번, 그리고 이 ZIP을 새 폴더에 풀어서 한 번, 총 세 번 실행해 5개 파일의 MD5 해시가 "
+        "모두 같은 것을 확인한 기록은 `제출물/재현성_확인.md`에 있습니다.",
         "",
         f"소스: {소스}",
         "",
@@ -416,9 +537,10 @@ def 제출물만들기(설정, 메타, 정보, 숫자, 과제자료):
         "",
         "## 제출 파일",
         "",
-        f"- `제출_문서와장치.zip` — 문서 3개(이력서·자기소개서·경력기술서) + 장치(실행 소스·README·마지막 결과) + 본문",
+        f"- `{이름표_문서(메타)}` — 이력서·자기소개서·경력기술서를 한 파일에 담은 Word 문서",
+        f"- `제출_문서와장치.zip` — 위 문서와 같은 내용의 MD 3개 + 장치(실행 소스·README·마지막 결과) + 본문 + 짧은 확인 방법·제출문·두 번 실행한 결과 비교",
         "",
-        "## AI와 나의 판단",
+        "## AI와 나의 판단 세 줄",
         "",
     ]
     제목표 = {
@@ -427,9 +549,13 @@ def 제출물만들기(설정, 메타, 정보, 숫자, 과제자료):
         "AI_제안을_따르지_않은_일": "AI 제안을 따르지 않은 일",
     }
     for 번호, 키 in enumerate(제목표, start=1):
-        글.append(f"{번호}. **{제목표[키]}**")
+        글.append(f"{번호}. **{제목표[키]}**: {판단['세줄'][키]}")
+    글 += ["", "### 세부 근거", ""]
+    for 키, 제목 in 제목표.items():
+        글.append(f"**{제목}**")
+        글.append("")
         for 항목 in 판단[키]:
-            글.append(f"   - {항목}")
+            글.append(f"- {항목}")
         글.append("")
     과제수 = len(
         [t for t in 과제자료["과제"] if t.get("상태") != "예정" and 메타["track_id"] in t["트랙"]]
@@ -552,6 +678,7 @@ def 만들기():
 
     기록일수문구 = f"{리추얼['기록일수']}일" if 리추얼 else "리추얼"
     첫화면_보조문 = 메타["첫화면_보조문"].replace("{기록일수}", 기록일수문구)
+    동료자료 = 동료의_말_읽기()
 
     값 = {
         "{{이름}}": html.escape(메타["이름"]),
@@ -560,8 +687,15 @@ def 만들기():
         "{{한줄소개_출처}}": html.escape(메타["한줄소개_출처"]),
         "{{첫화면_보조문}}": html.escape(첫화면_보조문),
         "{{다른버전_링크}}": 다른버전_html(설정),
+        "{{연락처_칩}}": 연락처_칩_html(),
         "{{이야기_본문}}": 본문_html() + f"\n    <p>{html.escape(메타['마무리_목표문'])}</p>",
         "{{능력_카드}}": 능력_html(메타),
+        "{{동료의_말_제목}}": html.escape(동료자료["제목"]) if 동료자료 else "함께 일한 동료가 적어 준 말",
+        "{{동료의_말}}": 동료의_말_html(동료자료) if 동료자료 else "",
+        "{{동료의_말_안내}}": (
+            "리추얼 기록의 “동료가 말해 준 내 장점” 칸에 동료들이 직접 적어 준 문장을 날짜와 함께 옮긴 것입니다. "
+            "내가 쓴 말이 아니라 같이 일한 사람이 쓴 말이고, 동료 이름은 넣지 않았습니다."
+        ),
         "{{숫자_칸}}": 숫자_html(숫자),
         "{{숫자_안내}}": "이 칸의 숫자는 기록 파일에서 그대로 센 것입니다. 새 기록을 넣고 장치를 한 번 돌리면 다시 계산됩니다.",
         "{{대표작}}": 대표작_html(메타),
@@ -584,9 +718,16 @@ def 만들기():
         raise SystemExit(f"[중단] 채우지 못한 자리: {sorted(set(남은))}")
 
     출력 = 사업장 / 정보["사이트폴더"]
-    출력.mkdir(parents=True, exist_ok=True)
+    (출력 / "자료").mkdir(parents=True, exist_ok=True)
     (출력 / "index.html").write_text(문서, encoding="utf-8")
-    print(f"[완료] {출력.name}/index.html")
+
+    스타일 = (장치 / "템플릿" / "style.css.tmpl").read_text(encoding="utf-8")
+    for 키 in ("{{강조색}}", "{{강조색_연한}}", "{{강조색_다크}}"):
+        스타일 = 스타일.replace(키, 값[키])
+    (출력 / "자료" / "style.css").write_text(스타일, encoding="utf-8")
+    print(f"[완료] {출력.name}/index.html, 자료/style.css")
+
+    문서페이지만들기(메타, 정보, 과제자료, 숫자, 출력, 값)
 
     문서만들기(메타, 정보, 과제자료, 숫자)
 
