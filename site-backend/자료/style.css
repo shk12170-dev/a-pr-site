@@ -224,6 +224,7 @@
     border-radius: 999px; padding: 4px 11px; margin-bottom: 10px;
   }
   .work p { margin: 10px 0 18px; color: var(--muted); }
+  .work .links { display: flex; flex-wrap: wrap; gap: 10px; }
   .work a.btn {
     display: inline-block; font-size: 14px; text-decoration: none; font-weight: 700;
     background: var(--accent); color: #fff;
@@ -232,6 +233,11 @@
     transition: transform .15s ease, box-shadow .15s ease;
   }
   .work a.btn:hover { transform: translateY(-2px); box-shadow: 0 14px 26px -10px var(--accent); }
+  .work a.btn-secondary {
+    background: transparent; color: var(--fg);
+    border: 1.5px solid var(--line); box-shadow: none;
+  }
+  .work a.btn-secondary:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--accent); }
   .work.pending { background: transparent; box-shadow: none; border: 1.5px dashed var(--line); }
   .work.pending:hover { transform: none; box-shadow: none; }
   .work.pending .badge { font-size: 14px; color: var(--muted); }

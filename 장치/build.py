@@ -316,9 +316,14 @@ def 대표작_html(트랙메타) -> str:
                 f"    </article>"
             )
         else:
+            링크들 = [f'      <a class="btn" href="{html.escape(w["링크"])}">{html.escape(w["링크문구"])}</a>']
+            if w.get("링크2"):
+                링크들.append(
+                    f'      <a class="btn btn-secondary" href="{html.escape(w["링크2"])}">{html.escape(w["링크문구2"])}</a>'
+                )
             덩어리.append(
                 f'    <article class="work">\n{머리}'
-                f'      <a class="btn" href="{html.escape(w["링크"])}">{html.escape(w["링크문구"])}</a>\n'
+                f'      <div class="links">\n' + "\n".join(링크들) + "\n      </div>\n"
                 f"    </article>"
             )
     return "\n".join(덩어리)
